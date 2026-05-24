@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Максим gh0sts_01 — Фотограф</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Mono:wght@300;400;500&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════
+   FUJIFILM X — CLASSIC BLACK / GREY / RED
+   Корпус: матовый чёрный · Диски: тёмный металл · Акцент: фирменный красный
+═══════════════════════════════════════════════════════ */
+:root {
+  --black:   #0f0f0f;       /* корпус камеры */
+  --black2:  #181818;
+  --black3:  #222222;
+  --steel:   #2e2e2e;       /* металл диска */
+  --steel2:  #3a3a3a;
+  --silver:  #8c8c8c;       /* гравировка */
+  --silver2: #b0b0b0;
+  --white:   #f0f0f0;       /* белая маркировка */
+  --white2:  #d0d0d0;
+  --red:     #c8102e;       /* фирменный красный Fujifilm */
+  --red2:    #e8213f;       /* ховер */
+  --ease:    cubic-bezier(.4,0,.2,1);
+
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 300;
+  background: var(--black2);
+  color: var(--white2);
+  overflow-x: hidden;
+  background-image: var(--grain);
+}
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+button { cursor: pointer; border: none; background: none; }
+a { text-decoration: none; color: inherit; }
+
+/* ── SCROLLBAR ─────────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--red); }
+
+/* ══════════════════════════════════════════════════════
+   NAV  — панель управления X-E2
+══════════════════════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 40px;
+  height: 52px;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background .4s, border-color .4s;
+}
+nav.scrolled {
+  background: rgba(15,15,15,.97);
+  border-bottom-color: rgba(200,16,46,.3);
+  backdrop-filter: blur(10px);
+}
+
+/* логотип */
+.nav-logo {
+  font-family: 'Special Elite', cursive;
+  font-size: 17px; letter-spacing: .18em;
+  color: var(--white);
+  position: relative;
+}
+/* красная черта под логотипом — как красный шильдик Fujifilm */
+.nav-logo::after {
+  content: '';
+  position: absolute; bottom: -4px; left: 0; right: 0;
+  height: 2px; background: var(--red);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .4s var(--ease);
+}
+nav.scrolled .nav-logo::after { transform: scaleX(1); }
+
+/* кнопка — красная, как кнопка записи видео */
+.nav-cta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; font-weight: 500; letter-spacing: .22em;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  color: var(--red);
+  border: 1px solid rgba(200,16,46,.5);
+  position: relative; overflow: hidden;
+  transition: color .3s, border-color .3s;
+}
+.nav-cta::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--red);
+  transform: translateX(-101%);
+  transition: transform .3s var(--ease);
+  z-index: -1;
+}
+.nav-cta:hover { color: var(--white); border-color: var(--red); }
+.nav-cta:hover::before { transform: translateX(0); }
+
+/* ══════════════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════════════ */
+.hero {
+  position: relative; height: 50vh; min-height: 340px;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  transform: scale(1.06);
+}
+.hero-bg img {
+  width: 100%; height: 100%; object-fit: cover;
+  object-position: center bottom;
+  filter: brightness(.4) saturate(.85) contrast(1.1);
+}
+/* виньетка */
+.hero-vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center,
+    transparent 35%, rgba(0,0,0,.75) 100%);
+  pointer-events: none;
+}
+/* тонкая красная полоса снизу — как индикатор затвора */
+.hero-halation {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 85%,
+    rgba(200,16,46,.12) 100%
+  );
+  pointer-events: none;
+}
+.hero-content {
+  position: relative; z-index: 2;
+  height: 100%;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  text-align: center;
+  padding: 0 44px;
+}
+.hero-meta {
+  font-size: 9px; letter-spacing: .4em; text-transform: uppercase;
+  color: var(--silver2); margin-bottom: 12px;
+  animation: fadeUp .7s .1s both;
+}
+.hero-meta span { opacity: .45; margin-right: 16px; }
+.hero-title {
+  font-family: 'IM Fell English', serif;
+  font-size: clamp(28px, 4.5vw, 56px);
+  font-weight: 400; line-height: 1.15;
+  color: var(--white);
+  animation: fadeUp .7s .25s both;
+  text-shadow: 0 2px 24px rgba(0,0,0,.8);
+}
+.hero-title .hero-sub-line {
+  display: block;
+  font-family: 'IM Fell English', serif;
+  font-style: normal;
+  font-size: .67em;
+  color: var(--silver2);
+  margin-top: .35em;
+  letter-spacing: .03em;
+}
+.tg-handle {
+  font-family: 'Special Elite', cursive;
+  letter-spacing: .12em;
+}
+
+/* ── ADMIN ── */
+.admin-only { display: none !important; }
+body.edit-mode .admin-only { display: flex !important; }
+body.edit-mode .config-panel { display: block !important; }
+.config-panel { display: none; }
+
+.change-cover-btn {
+  position: absolute; bottom: 16px; right: 44px; z-index: 10;
+  font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+  display: flex; align-items: center; gap: 6px;
+  transition: color .3s;
+}
+.change-cover-btn:hover { color: var(--red); }
+.change-cover-btn svg { width: 13px; height: 13px; }
+#coverInput { display: none; }
+
+/* ══════════════════════════════════════════════════════
+   FILMSTRIP DIVIDER
+══════════════════════════════════════════════════════ */
+.filmstrip {
+  height: 28px;
+  background: var(--black);
+  border-top: 1px solid #2a2a2a;
+  border-bottom: 1px solid #2a2a2a;
+  display: flex; align-items: center;
+  padding: 0 8px;
+  overflow: hidden;
+  position: relative;
+}
+.filmstrip-holes {
+  display: flex; gap: 0; width: 100%; align-items: center;
+}
+.filmstrip-hole {
+  flex-shrink: 0;
+  width: 16px; height: 12px;
+  border: 1px solid #333;
+  border-radius: 2px;
+  margin-right: 24px;
+}
+.filmstrip-text {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  font-size: 8px; letter-spacing: .5em; text-transform: uppercase;
+  color: rgba(200,16,46,.35);
+  white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════════════════
+   PORTFOLIO
+══════════════════════════════════════════════════════ */
+.portfolio {
+  padding: 64px 44px 80px;
+  background: var(--black2);
+  background-image: var(--grain);
+}
+.portfolio-header {
+  display: flex; align-items: baseline; gap: 20px;
+  margin-bottom: 48px;
+  border-bottom: 1px solid rgba(200,16,46,.2);
+  padding-bottom: 20px;
+}
+.portfolio-header h2 {
+  font-family: 'Special Elite', cursive;
+  font-size: clamp(28px, 3.5vw, 48px);
+  font-weight: 400; letter-spacing: .05em;
+  color: var(--white);
+}
+.portfolio-header .ph-label {
+  font-size: 9px; letter-spacing: .35em;
+  text-transform: uppercase; color: var(--red); opacity: .8;
+}
+
+/* ── Сетка папок ── */
+.folders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2px;
+}
+.folder-card {
+  position: relative; overflow: hidden;
+  aspect-ratio: 2/3; cursor: pointer;
+  background: var(--steel);
+}
+.folder-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  border: 2px solid transparent;
+  transition: border-color .3s;
+  z-index: 3; pointer-events: none;
+}
+.folder-card:hover::after { border-color: var(--red); }
+
+.folder-cover {
+  width: 100%; height: 100%;
+  transition: transform .8s var(--ease), filter .5s;
+  filter: brightness(.9) saturate(.9) contrast(1.05);
+}
+.folder-card:hover .folder-cover {
+  transform: scale(1.04);
+  filter: brightness(.75) saturate(.8) contrast(1.1);
+}
+.folder-title-bar {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 28px 18px 16px;
+  background: linear-gradient(to top, rgba(0,0,0,.88) 0%, transparent 100%);
+  z-index: 2;
+}
+.folder-name {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px; font-weight: 400; letter-spacing: .06em;
+  color: var(--white);
+  line-height: 1.3;
+}
+.folder-count {
+  font-size: 9px; letter-spacing: .25em; color: var(--red2);
+  margin-top: 4px; text-transform: uppercase; opacity: .9;
+}
+/* красная маркировка номера — как маркировка плёнки */
+.folder-frame-no {
+  position: absolute; top: 10px; right: 12px; z-index: 2;
+  font-size: 9px; letter-spacing: .2em; color: rgba(200,16,46,.6);
+}
+
+.folders-loading {
+  grid-column: 1/-1;
+  padding: 60px 0; text-align: center;
+  font-size: 10px; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--silver); opacity: .6;
+}
+.folders-loading::before {
+  content: '';
+  display: block; width: 28px; height: 28px;
+  border: 1px solid rgba(200,16,46,.2);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: spin .9s linear infinite;
+  margin: 0 auto 16px;
+}
+
+/* ══════════════════════════════════════════════════════
+   ALBUM VIEW
+══════════════════════════════════════════════════════ */
+.album-view {
+  display: none;
+  padding: 36px 44px 80px;
+  background: var(--black2);
+  background-image: var(--grain);
+  animation: fadeIn .4s var(--ease);
+}
+.album-view.active { display: block; }
+
+.album-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 9px; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--silver); cursor: pointer; margin-bottom: 36px;
+  transition: gap .3s, color .3s;
+}
+.album-back:hover { gap: 12px; color: var(--red); }
+.album-back svg { width: 16px; height: 16px; }
+
+.album-header {
+  margin-bottom: 40px;
+  border-bottom: 1px solid rgba(200,16,46,.15);
+  padding-bottom: 20px;
+}
+.album-title {
+  font-family: 'Special Elite', cursive;
+  font-size: clamp(28px, 4vw, 56px);
+  color: var(--white); letter-spacing: .04em;
+  margin-bottom: 6px;
+}
+.album-subtitle {
+  font-size: 9px; color: var(--silver); letter-spacing: .3em;
+  text-transform: uppercase;
+}
+
+.photos-masonry { columns: 3; column-gap: 2px; }
+.photo-item {
+  break-inside: avoid; margin-bottom: 2px;
+  overflow: hidden; cursor: zoom-in;
+}
+.photo-item img {
+  display: block; width: 100%;
+  transition: transform .5s var(--ease), filter .4s;
+  filter: brightness(.95) saturate(.9);
+}
+.photo-item:hover img {
+  transform: scale(1.02);
+  filter: brightness(.8) saturate(.85) contrast(1.05);
+}
+
+/* ══════════════════════════════════════════════════════
+   LIGHTBOX
+══════════════════════════════════════════════════════ */
+.lightbox {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(5,5,5,.98);
+  align-items: center; justify-content: center;
+}
+.lightbox.active { display: flex; }
+.lightbox-inner {
+  position: relative; max-width: 90vw; max-height: 90vh;
+}
+.lightbox-inner img {
+  max-width: 90vw; max-height: 90vh;
+  object-fit: contain; width: auto; height: auto;
+}
+.lightbox-close {
+  position: fixed; top: 20px; right: 28px;
+  font-size: 9px; letter-spacing: .3em; text-transform: uppercase;
+  color: rgba(255,255,255,.3); cursor: pointer;
+  transition: color .3s;
+}
+.lightbox-close:hover { color: var(--red); }
+.lb-nav {
+  position: fixed; top: 50%; transform: translateY(-50%);
+  color: rgba(255,255,255,.2); cursor: pointer;
+  font-size: 28px; line-height: 1; padding: 24px;
+  transition: color .3s;
+  user-select: none;
+}
+.lb-nav:hover { color: var(--red); }
+.lb-prev { left: 0; }
+.lb-next { right: 0; }
+.lb-counter {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  font-size: 9px; letter-spacing: .35em; color: rgba(255,255,255,.25);
+}
+
+/* ══════════════════════════════════════════════════════
+   POPUP
+══════════════════════════════════════════════════════ */
+.popup-overlay {
+  display: none; position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,.88);
+  backdrop-filter: blur(6px);
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.popup-overlay.active { display: flex; }
+
+.popup {
+  background: var(--black3);
+  background-image: var(--grain);
+  width: 100%; max-width: 500px;
+  padding: 48px 44px 44px;
+  position: relative;
+  border: 1px solid rgba(200,16,46,.25);
+  animation: slideUp .35s var(--ease) both;
+}
+/* красные угловые метки */
+.popup::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 28px; height: 28px;
+  border-top: 2px solid var(--red);
+  border-left: 2px solid var(--red);
+}
+.popup::after {
+  content: '';
+  position: absolute; bottom: 0; right: 0;
+  width: 28px; height: 28px;
+  border-bottom: 2px solid var(--red);
+  border-right: 2px solid var(--red);
+}
+.popup-close {
+  position: absolute; top: 16px; right: 18px;
+  font-size: 18px; color: var(--silver); line-height: 1;
+  transition: color .2s;
+}
+.popup-close:hover { color: var(--red); }
+
+.popup-tag {
+  font-size: 8px; letter-spacing: .45em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 12px; opacity: .8;
+}
+.popup h3 {
+  font-family: 'IM Fell English', serif;
+  font-size: 26px; font-weight: 400; line-height: 1.2;
+  color: var(--white); margin-bottom: 32px;
+}
+.field { margin-bottom: 22px; }
+.field label {
+  display: block; font-size: 8px; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--silver); margin-bottom: 8px;
+}
+.field input, .field textarea {
+  width: 100%; border: none;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  background: transparent;
+  padding: 8px 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px; color: var(--white2);
+  outline: none;
+  transition: border-color .3s;
+  resize: none;
+}
+.field input::placeholder, .field textarea::placeholder { color: rgba(255,255,255,.15); }
+.field input:focus, .field textarea:focus { border-bottom-color: var(--red); }
+.field textarea { min-height: 72px; }
+
+.submit-btn {
+  margin-top: 8px; width: 100%;
+  padding: 14px;
+  background: transparent;
+  border: 1px solid var(--red);
+  color: var(--red);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; letter-spacing: .35em; text-transform: uppercase;
+  font-weight: 500;
+  transition: background .3s, color .3s, transform .15s;
+}
+.submit-btn:hover { background: var(--red); color: var(--white); }
+.submit-btn:active { transform: scale(.98); }
+.submit-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+.popup-success {
+  display: none; text-align: center; padding: 20px 0;
+}
+.popup-success.active { display: block; }
+.popup-success .check {
+  width: 44px; height: 44px;
+  border: 1px solid var(--red); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 18px;
+  color: var(--red); font-size: 18px;
+}
+.popup-success p {
+  font-family: 'IM Fell English', serif;
+  font-size: 20px; font-weight: 400; color: var(--white); line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════════════════
+   CONFIG PANEL
+══════════════════════════════════════════════════════ */
+.config-panel {
+  background: var(--black); color: var(--white2);
+  padding: 48px 44px;
+  border-top: 1px solid rgba(200,16,46,.15);
+}
+.config-panel h2 {
+  font-family: 'Special Elite', cursive;
+  font-size: 24px; margin-bottom: 6px; color: var(--red);
+}
+.config-panel > p {
+  font-size: 11px; color: var(--silver); margin-bottom: 28px; line-height: 1.8;
+}
+.config-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+.config-field { flex: 1 1 260px; }
+.config-field label {
+  display: block; font-size: 8px; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--silver); margin-bottom: 8px;
+}
+.config-field input {
+  width: 100%;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(200,16,46,.2);
+  color: var(--white2);
+  padding: 10px 14px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  outline: none; transition: border-color .3s;
+}
+.config-field input:focus { border-color: var(--red); }
+.config-btn {
+  padding: 10px 28px;
+  border: 1px solid var(--red); color: var(--red);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; letter-spacing: .25em; text-transform: uppercase;
+  transition: background .3s, color .3s;
+  flex-shrink: 0;
+}
+.config-btn:hover { background: var(--red); color: var(--white); }
+.config-status { margin-top: 12px; font-size: 10px; color: var(--red); min-height: 16px; }
+
+/* ══════════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════════ */
+footer {
+  background: var(--black);
+  border-top: 2px solid var(--red);
+  padding: 32px 44px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-logo {
+  font-family: 'Special Elite', cursive;
+  font-size: 16px; letter-spacing: .18em;
+  color: var(--white2);
+}
+.footer-meta {
+  font-size: 8px; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--silver); opacity: .5;
+}
+.footer-cta {
+  padding: 8px 18px;
+  border: 1px solid rgba(200,16,46,.4); color: var(--red);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px; letter-spacing: .25em; text-transform: uppercase;
+  cursor: pointer; transition: all .3s;
+}
+.footer-cta:hover { border-color: var(--red); background: var(--red); color: var(--white); }
+
+/* ══════════════════════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .hero-content { padding: 0 20px; }
+  .change-cover-btn { right: 20px; }
+  .portfolio { padding: 48px 20px 60px; }
+  .folders-grid { grid-template-columns: 1fr 1fr; }
+  .photos-masonry { columns: 2; }
+  .album-view { padding: 24px 20px 60px; }
+  .popup { padding: 40px 24px 32px; }
+  footer { flex-direction: column; gap: 16px; text-align: center; padding: 24px 20px; }
+  .config-panel { padding: 36px 20px; }
+}
+@media (max-width: 480px) {
+  .folders-grid { grid-template-columns: 1fr; }
+  .photos-masonry { columns: 1; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ──────────────────────────────────────────── -->
+<nav id="mainNav">
+  <div class="nav-logo">Максим gh0sts_01</div>
+  <button class="nav-cta" onclick="openPopup()">Хочу съёмку</button>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────────────── -->
+<section class="hero" id="heroSection">
+  <div class="hero-bg" id="heroBg">
+    <img id="coverImg" src="" alt="Обложка" style="opacity:0;transition:opacity .6s">
+  </div>
+  <div class="hero-vignette"></div>
+  <div class="hero-halation"></div>
+  <div class="hero-content">
+    <p class="hero-meta">
+      <span>ISO 400</span>
+      <span>f/2.0</span>
+      <span>1/250s</span>
+      Fujifilm X-E2 · Provia 100F
+    </p>
+    <h1 class="hero-title">
+      Любительская съёмка мероприятий.
+      <span class="hero-sub-line">Фотограф&nbsp;<svg style="width:.8em;height:.8em;vertical-align:-.12em;margin:0 .15em" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.247l-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.31 14.317l-2.95-.924c-.64-.203-.654-.64.136-.954l11.526-4.443c.537-.194 1.006.131.54 1.251z"/></svg><a href="https://t.me/gh0sts_01" target="_blank" rel="noopener" class="tg-handle" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(200,16,46,.4);transition:border-color .2s;" onmouseover="this.style.borderBottomColor='rgba(200,16,46,.9)'" onmouseout="this.style.borderBottomColor='rgba(200,16,46,.4)'">@gh0sts_01</a></span>
+    </h1>
+  </div>
+  <label class="change-cover-btn admin-only" for="coverInput">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M15.232 5.232l3.536 3.536M9 11l6-6 3 3-6 6H9v-3z"/>
+    </svg>
+    Сменить обложку
+  </label>
+  <input type="file" id="coverInput" accept="image/*">
+</section>
+
+<!-- ─── FILMSTRIP DIVIDER ─────────────────────────────── -->
+<div class="filmstrip">
+  <div class="filmstrip-holes" id="filmstripHoles"></div>
+  <span class="filmstrip-text">FUJIFILM · 135 · ISO 400 · 36exp</span>
+</div>
+
+<!-- ─── PORTFOLIO ─────────────────────────────────────── -->
+<section class="portfolio" id="portfolio">
+  <div class="portfolio-header">
+    <h2>Портфолио</h2>
+    <span class="ph-label">проекты</span>
+  </div>
+  <div class="folders-grid" id="foldersGrid">
+    <div class="folders-loading">Загрузка с Яндекс.Диска…</div>
+  </div>
+</section>
+
+<!-- ─── ALBUM VIEW ────────────────────────────────────── -->
+<section class="album-view" id="albumView">
+  <div class="album-back" onclick="closeAlbum()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M19 12H5M12 5l-7 7 7 7"/>
+    </svg>
+    Назад
+  </div>
+  <div class="album-header">
+    <h2 class="album-title" id="albumTitle">–</h2>
+    <p class="album-subtitle" id="albumSubtitle">Загрузка…</p>
+  </div>
+  <div class="photos-masonry" id="photosMasonry"></div>
+</section>
+
+<!-- ─── FOOTER ────────────────────────────────────────── -->
+<footer>
+  <div class="footer-logo">Максим gh0sts_01</div>
+  <span class="footer-meta">© 2025 · все права защищены</span>
+  <button class="footer-cta" onclick="openPopup()">Хочу съёмку</button>
+</footer>
+
+<!-- ─── POPUP ─────────────────────────────────────────── -->
+<div class="popup-overlay" id="popupOverlay" onclick="handleOverlayClick(event)">
+  <div class="popup">
+    <button class="popup-close" onclick="closePopup()">×</button>
+    <div id="popupForm">
+      <p class="popup-tag">Заявка на съёмку</p>
+      <h3>Давайте создадим<br>что-то красивое</h3>
+      <div class="field">
+        <label>Ваше имя</label>
+        <input type="text" id="fieldName" placeholder="Как вас зовут?">
+      </div>
+      <div class="field">
+        <label>Телефон или e-mail</label>
+        <input type="text" id="fieldContact" placeholder="+7 900 … или name@mail.ru">
+      </div>
+      <div class="field">
+        <label>Комментарий</label>
+        <textarea id="fieldComment" placeholder="Расскажите об идее…"></textarea>
+      </div>
+      <button class="submit-btn" onclick="submitForm()">Отправить заявку</button>
+    </div>
+    <div class="popup-success" id="popupSuccess">
+      <div class="check">✓</div>
+      <p>Спасибо!<br>Свяжусь с вами<br>в ближайшее время.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── LIGHTBOX ──────────────────────────────────────── -->
+<div class="lightbox" id="lightbox">
+  <span class="lightbox-close" onclick="closeLightbox()">Закрыть ×</span>
+  <div class="lb-nav lb-prev" onclick="lbStep(-1)">‹</div>
+  <div class="lightbox-inner">
+    <img id="lbImg" src="" alt="">
+  </div>
+  <div class="lb-nav lb-next" onclick="lbStep(1)">›</div>
+  <div class="lb-counter" id="lbCounter"></div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════════════════ */
+const WEB3FORMS_KEY = '373be404-faf2-43fb-88e0-1fb538ae3af5';
+const EDIT_PASSWORD = 'myphoto2025';
+
+/*
+  Список публичных папок с Яндекс.Диска.
+  Чтобы добавить/убрать альбом — редактируйте этот массив.
+  name  — название альбома на сайте
+  url   — публичная ссылка вида https://disk.yandex.ru/d/…
+*/
+const PUBLIC_FOLDERS = [
+  { name: 'Альбом 1', url: 'https://disk.yandex.ru/d/1ajQt2kdLjTsmA' },
+  { name: 'Альбом 2', url: 'https://disk.yandex.ru/d/WX-6QGdGQG0B1w' },
+  { name: 'Альбом 3', url: 'https://disk.yandex.ru/d/5pWatEF8wfg0_Q' },
+  { name: 'Альбом 4', url: 'https://disk.yandex.ru/d/4yc-3xyfOtYfMg' },
+];
+
+/* ═══════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════ */
+let folders       = [];
+let currentPhotos = [];
+let lbIndex       = 0;
+
+/* ═══════════════════════════════════════════════
+   FILMSTRIP HOLES (decoration)
+═══════════════════════════════════════════════ */
+(function buildFilmstrip() {
+  const el = document.getElementById('filmstripHoles');
+  for (let i = 0; i < 40; i++) {
+    const h = document.createElement('div');
+    h.className = 'filmstrip-hole';
+    el.appendChild(h);
+  }
+})();
+
+/* ═══════════════════════════════════════════════
+   NAV SCROLL
+═══════════════════════════════════════════════ */
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ═══════════════════════════════════════════════
+   HERO COVER CHANGE
+═══════════════════════════════════════════════ */
+document.getElementById('coverInput').addEventListener('change', function () {
+  const file = this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { document.getElementById('coverImg').src = e.target.result; };
+  reader.readAsDataURL(file);
+});
+
+/* ═══════════════════════════════════════════════
+   HERO PARALLAX
+═══════════════════════════════════════════════ */
+window.addEventListener('scroll', () => {
+  const bg = document.getElementById('heroBg');
+  if (bg) bg.style.transform = `scale(1.06) translateY(${window.scrollY * 0.15}px)`;
+});
+
+/* ═══════════════════════════════════════════════
+   YANDEX DISK — PUBLIC API (без токена)
+   Endpoint: /v1/disk/public/resources?public_key=<url>
+═══════════════════════════════════════════════ */
+const YA_PUBLIC = 'https://cloud-api.yandex.net/v1/disk/public/resources';
+
+async function yadiskPublicGet(publicUrl, extraParams = '') {
+  const key = encodeURIComponent(publicUrl);
+  const res = await fetch(`${YA_PUBLIC}?public_key=${key}${extraParams}`);
+  if (!res.ok) throw new Error('YaDisk ' + res.status);
+  return res.json();
+}
+
+/* Получить первую картинку из папки (для обложки) */
+async function getPublicCover(publicUrl) {
+  try {
+    const data = await yadiskPublicGet(publicUrl,
+      '&limit=20&preview_size=800x600&fields=_embedded.items.file,_embedded.items.mime_type,_embedded.items.preview');
+    const items = data._embedded?.items || [];
+    const img = items.find(i => i.mime_type?.startsWith('image/'));
+    return img?.preview || img?.file || null;
+  } catch { return null; }
+}
+
+/* Получить все фото из папки:
+   возвращаем [{thumb, original}] —
+   thumb    (~1200px preview) — для плитки, грузится быстро
+   original (file)            — для лайтбокса, грузится по клику */
+async function getPublicPhotos(publicUrl) {
+  try {
+    const data = await yadiskPublicGet(publicUrl,
+      '&limit=200&preview_size=1200x1200&fields=_embedded.items.file,_embedded.items.mime_type,_embedded.items.preview');
+    const items = data._embedded?.items || [];
+    return items
+      .filter(i => i.mime_type?.startsWith('image/'))
+      .map(i => ({ thumb: i.preview || i.file, original: i.file }))
+      .filter(i => i.thumb);
+  } catch { return []; }
+}
+
+/* Загрузить все папки при старте */
+async function loadFolders() {
+  const grid = document.getElementById('foldersGrid');
+  grid.innerHTML = '<div class="folders-loading">Загрузка альбомов…</div>';
+  try {
+    const list = await Promise.all(PUBLIC_FOLDERS.map(async (f, idx) => {
+      // Параллельно: имя из API (или из конфига), обложка
+      let name = f.name;
+      let cover = null;
+      try {
+        const meta = await yadiskPublicGet(f.url, '&preview_size=800x600&fields=name,_embedded.items.file,_embedded.items.mime_type,_embedded.items.preview&limit=10');
+        const items = meta._embedded?.items || [];
+        const img = items.find(i => i.mime_type?.startsWith('image/'));
+        cover = img?.preview || img?.file || null;
+      } catch { /* обложка останется null */ }
+      return { name, url: f.url, cover, idx };
+    }));
+    folders = list;
+    renderFolders(list);
+  } catch (e) {
+    grid.innerHTML = `<div class="folders-loading" style="opacity:.5">Ошибка: ${e.message}</div>`;
+  }
+}
+
+/* Открыть альбом */
+async function fetchFolderPhotos(publicUrl) {
+  return getPublicPhotos(publicUrl);
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER FOLDERS
+═══════════════════════════════════════════════ */
+function renderFolders(list) {
+  const grid = document.getElementById('foldersGrid');
+  if (!list.length) {
+    grid.innerHTML = '<div class="folders-loading" style="opacity:.4">Папки не найдены</div>';
+    return;
+  }
+  grid.innerHTML = '';
+  list.forEach((f, i) => {
+    const card = document.createElement('div');
+    card.className = 'folder-card';
+    card.onclick = () => openAlbum(i);
+    const frameNo = String(i + 1).padStart(2, '0');
+    const coverSrc = f.cover || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1" height="1"%3E%3C/svg%3E';
+    card.innerHTML = `
+      <img class="folder-cover" src="${coverSrc}" alt="${f.name}" loading="lazy">
+      <div class="folder-title-bar">
+        <div class="folder-name">${f.name}</div>
+        <div class="folder-count" id="cnt-${i}"></div>
+      </div>
+      <div class="folder-frame-no">${frameNo}▸</div>`;
+    grid.appendChild(card);
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   ALBUM OPEN / CLOSE
+═══════════════════════════════════════════════ */
+async function openAlbum(index) {
+  const f = folders[index];
+  document.getElementById('albumTitle').textContent = f.name;
+  document.getElementById('albumSubtitle').textContent = 'Загрузка…';
+  document.getElementById('photosMasonry').innerHTML = '';
+  document.getElementById('portfolio').style.display = 'none';
+  document.getElementById('albumView').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const photos = await fetchFolderPhotos(f.url);
+  currentPhotos = photos;
+
+  const cnt = document.getElementById('cnt-' + index);
+  if (cnt) cnt.textContent = photos.length + ' кадров';
+
+  document.getElementById('albumSubtitle').textContent = photos.length + ' кадров';
+  renderMasonry(photos);
+}
+
+function closeAlbum() {
+  document.getElementById('albumView').classList.remove('active');
+  document.getElementById('portfolio').style.display = '';
+  document.getElementById('portfolio').scrollIntoView({ behavior: 'smooth' });
+}
+
+function renderMasonry(photos) {
+  const container = document.getElementById('photosMasonry');
+  container.innerHTML = '';
+  photos.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'photo-item';
+    div.onclick = () => openLightbox(i);
+    const img = document.createElement('img');
+    img.src = p.thumb;
+    img.alt = ''; img.loading = 'lazy';
+    div.appendChild(img);
+    container.appendChild(div);
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   LIGHTBOX
+═══════════════════════════════════════════════ */
+function openLightbox(i) {
+  lbIndex = i;
+  const lbImg = document.getElementById('lbImg');
+  // Показываем thumb сразу, параллельно грузим оригинал
+  lbImg.src = currentPhotos[i].thumb;
+  const hi = new Image();
+  hi.onload = () => { if (lbIndex === i) lbImg.src = hi.src; };
+  hi.src = currentPhotos[i].original;
+  document.getElementById('lbCounter').textContent = (i + 1) + ' / ' + currentPhotos.length;
+  document.getElementById('lightbox').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
+}
+function lbStep(dir) {
+  lbIndex = (lbIndex + dir + currentPhotos.length) % currentPhotos.length;
+  const idx = lbIndex;
+  const lbImg = document.getElementById('lbImg');
+  lbImg.src = currentPhotos[idx].thumb;
+  const hi = new Image();
+  hi.onload = () => { if (lbIndex === idx) lbImg.src = hi.src; };
+  hi.src = currentPhotos[idx].original;
+  document.getElementById('lbCounter').textContent = (idx + 1) + ' / ' + currentPhotos.length;
+}
+document.getElementById('lightbox').addEventListener('click', e => {
+  if (e.target === document.getElementById('lightbox')) closeLightbox();
+});
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('active')) return;
+  if (e.key === 'ArrowRight') lbStep(1);
+  if (e.key === 'ArrowLeft')  lbStep(-1);
+  if (e.key === 'Escape')     closeLightbox();
+});
+
+/* ═══════════════════════════════════════════════
+   POPUP
+═══════════════════════════════════════════════ */
+function openPopup() {
+  document.getElementById('popupForm').style.display = '';
+  document.getElementById('popupSuccess').classList.remove('active');
+  document.getElementById('popupOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closePopup() {
+  document.getElementById('popupOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('popupOverlay')) closePopup();
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closePopup();
+});
+
+async function submitForm() {
+  const name    = document.getElementById('fieldName').value.trim();
+  const contact = document.getElementById('fieldContact').value.trim();
+  const comment = document.getElementById('fieldComment').value.trim();
+  if (!name || !contact) { alert('Заполните имя и контакт.'); return; }
+
+  const btn = document.querySelector('.submit-btn');
+  btn.textContent = 'Отправляю…'; btn.disabled = true;
+
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: 'Заявка на съёмку — ' + name,
+        from_name: 'Портфолио-сайт',
+        name, contact, comment
+      })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+  } catch (e) {
+    console.warn('Ошибка отправки:', e.message);
+  }
+
+  btn.textContent = 'Отправить заявку'; btn.disabled = false;
+  document.getElementById('popupForm').style.display = 'none';
+  document.getElementById('popupSuccess').classList.add('active');
+  setTimeout(closePopup, 3200);
+}
+
+/* ═══════════════════════════════════════════════
+   EDIT MODE
+═══════════════════════════════════════════════ */
+(function activateEditMode() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('edit') !== EDIT_PASSWORD) return;
+  document.body.classList.add('edit-mode');
+  history.replaceState({}, '', window.location.pathname);
+  const badge = document.createElement('div');
+  badge.textContent = '✏ Режим редактирования';
+  Object.assign(badge.style, {
+    position:'fixed', bottom:'20px', left:'50%', transform:'translateX(-50%)',
+    background:'#0f0f0f', color:'#c8102e', padding:'7px 18px',
+    fontSize:'9px', letterSpacing:'.3em', textTransform:'uppercase',
+    zIndex:'9999', pointerEvents:'none', border:'1px solid rgba(200,16,46,.3)',
+    transition:'opacity 1s'
+  });
+  document.body.appendChild(badge);
+  setTimeout(() => { badge.style.opacity = '0'; }, 3000);
+  setTimeout(() => badge.remove(), 4200);
+})();
+
+/* ═══════════════════════════════════════════════
+   INIT — загружаем обложку и диск
+═══════════════════════════════════════════════ */
+
+/* Прямая ссылка на обложку через публичный API Яндекса */
+const COVER_PUBLIC_URL = 'https://disk.yandex.ru/i/Uo0RqaqJq4o1hQ';
+
+async function loadCover() {
+  try {
+    const key = encodeURIComponent(COVER_PUBLIC_URL);
+    const res = await fetch(
+      `https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key=${key}`
+    );
+    if (!res.ok) throw new Error('cover ' + res.status);
+    const data = await res.json();
+    const img = document.getElementById('coverImg');
+    img.onload = () => { img.style.opacity = '1'; };
+    img.src = data.href;
+  } catch (e) {
+    console.warn('Обложка не загрузилась:', e.message);
+  }
+}
+
+loadCover();
+loadFolders();
+</script>
+</body>
+</html>
